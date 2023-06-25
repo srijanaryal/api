@@ -1,0 +1,149 @@
+def localProperties = new Properties()
+def localPropertiesFile = rootProject.file('local.properties')
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.withReader('UTF-8') { reader ->
+        localProperties.load(reader)
+    }
+}
+
+def flutterRoot = localProperties.getProperty('flutter.sdk')
+if (flutterRoot == null) {
+    throw new GradleException("Flutter SDK not found. Define location with flutter.sdk in the local.properties file.")
+}
+
+def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
+if (flutterVersionCode == null) {
+    flutterVersionCode = '1'
+}
+
+def flutterVersionName = localProperties.getProperty('flutter.versionName')
+if (flutterVersionName == null) {
+    flutterVersionName = '1.0'
+}
+
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
+
+android {
+    compileSdkVersion flutter.compileSdkVersion
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+
+    lintOptions {
+        checkReleaseBuilds false
+    }
+
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+    }
+
+    defaultConfig {
+        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
+        applicationId "com.example.flutter_learning"
+        minSdkVersion 21
+        targetSdkVersion 33
+        versionCode 1
+        versionName '1.0.0'
+        multiDexEnabled true
+    }
+    android.applicationVariants.all { variant ->
+        def newName = "Flutter Learning" //App Name
+        variant.outputs.all { output ->
+            def outputFile = output.outputFile
+            newName += "-V-" + defaultConfig.versionName
+            if (variant.buildType.name == "release") {
+                newName += ".apk"
+            } else {
+                newName += "-qa.apk"
+            }
+            if (!output.zipAlign) {
+                newName = newName.replace(".apk", "-unaligned.apk")
+            }
+            if (outputFile != null && outputFile.name.endsWith('.apk')) {
+                def fileName = outputFile.name.replace(".apk",
+                        "${newName}")
+                outputFileName = fileName
+            }
+
+        }
+    }
+    flavorDimensions "tier"
+    productFlavors {
+        uat {
+            dimension 'tier'
+            buildConfigField 'String', 'BASE_URL', '"https://uat-graphql.kuostats.com"'
+            buildConfigField 'String', 'DOMAIN', '"uat"'
+            resValue 'string', 'app_name', 'Flutter Learning UAT'
+            buildConfigField 'String', 'CLIENT_SECRET', '"cxq0qez0BuFR7pSFFn7O"'
+            buildConfigField 'String', 'API_KEY', '"16c9c17b5f17cba2edd2981deb74a46d123a9848d443c9d59ea4231f54892ada3391542f48609387"'
+            buildConfigField 'String', 'CLIENT_ID', '"f22e2250-3137-40f9-a8f3-1c704c451c14"'
+            versionCode 1
+            versionName "1.0.0"
+        }
+
+        qa {
+            dimension 'tier'
+            buildConfigField 'String', 'BASE_URL', '"https://qa-graphql.kuostats.com"'
+            buildConfigField 'String', 'DOMAIN', '"qa"'
+            resValue 'string', 'app_name', 'Flutter Learning QA'
+            buildConfigField 'String', 'CLIENT_SECRET', '"cxq0qez0BuFR7pSFFn7O"'
+            buildConfigField 'String', 'API_KEY', '"16c9c17b5f17cba2edd2981deb74a46d123a9848d443c9d59ea4231f54892ada3391542f48609387"'
+            buildConfigField 'String', 'CLIENT_ID', '"f22e2250-3137-40f9-a8f3-1c704c451c14"'
+            versionCode 1
+            versionName "1.0.0"
+        }
+        dev {
+            dimension 'tier'
+            buildConfigField 'String', 'BASE_URL', '"https://dev-graphql.kuostats.com"'
+            buildConfigField 'String', 'DOMAIN', '"dev"'
+            resValue 'string', 'app_name', 'Flutter Learning Dev'
+            buildConfigField 'String', 'CLIENT_SECRET', '"cxq0qez0BuFR7pSFFn7O"'
+            buildConfigField 'String', 'API_KEY', '"16c9c17b5f17cba2edd2981deb74a46d123a9848d443c9d59ea4231f54892ada3391542f48609387"'
+            buildConfigField 'String', 'CLIENT_ID', '"f22e2250-3137-40f9-a8f3-1c704c451c14"'
+            versionCode 1
+            versionName "1.0.0"
+        }
+        live {
+            dimension 'tier'
+            buildConfigField 'String', 'BASE_URL', '"https://graphql.kuostats.com"'
+            buildConfigField 'String', 'DOMAIN', '"live"'
+            resValue 'string', 'app_name', 'Flutter Learning'
+            buildConfigField 'String', 'CLIENT_SECRET', '"cxq0qez0BuFR7pSFFn7O"'
+            buildConfigField 'String', 'API_KEY', '"16c9c17b5f17cba2edd2981deb74a46d123a9848d443c9d59ea4231f54892ada3391542f48609387"'
+            buildConfigField 'String', 'CLIENT_ID', '"f22e2250-3137-40f9-a8f3-1c704c451c14"'
+            versionCode 1
+            versionName "1.0.0"
+        }
+    }
+
+    packagingOptions {
+        exclude 'META-INF/ASL2.0'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/MANIFEST.MF'
+    }
+
+    buildTypes {
+        debug {
+            signingConfig signingConfigs.debug
+        }
+    }
+}
+
+flutter {
+    source '../..'
+}
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+}
