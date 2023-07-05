@@ -64,8 +64,7 @@ class _UsersScreenState extends State<UsersScreen> {
             itemBuilder: (context, index) {
               final post = userStore.usersList[index];
               return ListTile(
-                leading: const Text('lADO'),
-                TRAU
+                leading: const Text('Hello'),
                 title: BuildText(
                   text: post.username,
                   color: Colors.red,

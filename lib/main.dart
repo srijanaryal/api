@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_learning/project/user/screen/user_screen.dart';
+import 'package:flutter_learning/project/dog/screen/dog_screen.dart';
 import 'package:flutter_learning/shared/constants/providers_constant.dart';
 import 'package:flutter_learning/shared/singletons/baseurl_singleton.dart';
 import 'package:provider/provider.dart';
@@ -35,7 +35,7 @@ class _MyAppState extends State<MyApp> {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: const UsersScreen(),
+        home: const DogScreen(),
       ),
     );
   }
